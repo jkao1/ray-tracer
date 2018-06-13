@@ -49,6 +49,12 @@ func Norm(v Vector) Vector {
 	}
 }
 
+func Abs(v Vector) Vector {
+	return Dot(v, v)
+}
+
+func CondGet(cond bool, x interface{}) 
+
 func Magnitude(v Vector) float64 {
 	return math.Pow( Sum(Multiply(v, v)), 0.5 )
 }
