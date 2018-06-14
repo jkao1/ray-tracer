@@ -14,7 +14,7 @@ def cond_get(cond, x):
 
 eye = Vector(0, 0, -1)
 
-def trace(objects, origin, normal):
+def trace(objects, origin, normal, reflect_index=0):
     color = [ 0, 0, 0 ]
     object_distances = [ o.touches(origin, normal) for o in objects ]
     closest_object = reduce( np.minimum, object_distances )
@@ -27,7 +27,7 @@ def trace(objects, origin, normal):
     for (i, o, d) in frumpy:
         intersected = closest_object == d
         if np.any(intersected):
-            color += o.color(
+            individual_color = o.color(
                 objects,
                 origin.cond_get(intersected),
                 normal.cond_get(intersected),

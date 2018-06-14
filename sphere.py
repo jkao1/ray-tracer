@@ -82,7 +82,7 @@ class Sphere():
 
         return np.where(h, head, 1e10)
 
-    def color(self, objects, origin, norm, distance, i):
+    def color(self, objects, origin, norm, distance, i, reflect_index):
         intersection = origin + norm * distance
         translated = (intersection - self.c)
         inverse = translated * (1.0 / self.r)
@@ -101,13 +101,19 @@ class Sphere():
         diffused = self.d * lambert * visible_ones
 
         # phong reflection model
-        fi = translated.double()
-        reflection = (norm - fi * norm.dot(translated)).normal()
         # phong shading model
         shading = translated.dot( (reflected + backwards_trace).normal() )
         specular = Vector(1.0, 1.0, 1.0)
+
+        # thanks stack overflow
         specular *= np.power( np.clip(shading, 0.0, 1.0), 50.0)
+
         specular *= visible_ones
 
-        return ambient + diffused + reflection + specular
+        all_light = ambient + diffused + specular
+        if reflect_index < 3:
+            fi = translated.double()
+            reflection = (norm - fi * norm.dot(translated)).normal()
+            all_light += reflection
+        return all_light
 
