@@ -33,8 +33,6 @@ def trace(objects, origin, normal):
                 normal.cond_get(intersected),
                 cond_get(intersected, d),
                 i,
-                light,
-                eye,
             )
     return color
 

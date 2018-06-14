@@ -52,6 +52,8 @@ class Vector():
             cond_get(cond, self.z),
         )
 
+eye = Vector(0, 0, -1)
+light = Vector(100, 100, -100)
 
 class Sphere():
     def __init__(self, center, radius, diffuse_reflection):
@@ -80,7 +82,7 @@ class Sphere():
 
         return np.where(h, head, 1e10)
 
-    def color(self, objects, origin, norm, distance, i,  light, eye):
+    def color(self, objects, origin, norm, distance, i):
         intersection = origin + norm * distance
         translated = (intersection - self.c)
         inverse = translated * (1.0 / self.r)
