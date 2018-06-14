@@ -131,3 +131,9 @@ class Sphere():
         return all_light
 
 
+# this class was stolen from geeksforgeeks
+class Chess(Sphere):
+    def diffusecolor(self, M):
+        checker = ((M.x * 2).astype(int) % 2) == ((M.z * 2).astype(int) % 2)
+        return self.diffuse * checker
+

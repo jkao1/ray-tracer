@@ -1,4 +1,4 @@
-from sphere import Vector, Sphere
+from sphere import Vector, Sphere, Chess
 from PIL import Image
 import numpy as np
 
@@ -42,7 +42,11 @@ def trace(objects, origin, normal, reflect_index=0):
 
 
 all_objects = [
-    Sphere( Vector(0, 0, 0), 1, Vector(1, 0, 0) ),
+    Sphere(Vector(.75, 1., 1.), .6, Vector(0, 0, 1)),
+    Sphere(Vector(-.5, .1, .5), .2, Vector(1, 0, 0)),
+    Sphere(Vector(.5, .1, 1.5), .4, Vector(1, 0, 0)),
+    Sphere(Vector(0, .1, 5), .4, Vector(1, 1, 0)),
+    Chess(Vector(0,-20.5, 0), 20, Vector(0, 0, 1))
 ]
 
 # Mad quick code stolen from https://www.geeksforgeeks.org/numpy-tile-python/
