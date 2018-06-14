@@ -1,4 +1,5 @@
 from sphere import Vector, Sphere
+from PIL import Image
 import numpy as np
 
 WIDTH = 500
@@ -15,7 +16,7 @@ def cond_get(cond, x):
 eye = Vector(0, 0, -1)
 
 def trace(objects, origin, normal, reflect_index=0):
-    color = [ 0, 0, 0 ]
+    color = Vector(0, 0, 0)
     object_distances = [ o.touches(origin, normal) for o in objects ]
     closest_object = reduce( np.minimum, object_distances )
 
@@ -33,8 +34,11 @@ def trace(objects, origin, normal, reflect_index=0):
                 normal.cond_get(intersected),
                 cond_get(intersected, d),
                 i,
+                reflect_index
             )
+            color += individual_color.project(intersected)
     return color
+
 
 
 all_objects = [
@@ -60,13 +64,15 @@ total_color = trace(
     normalized,
 )
 
+
 # This may be my 10th "Thanks stackoverflow"
 screen = [
     Image.fromarray(
         (255 * np.clip( x, 0, 1 ).reshape(( HEIGHT, WIDTH))).astype(np.uint8),
         'L',
-    ) for x in colors
+    ) for x in [total_color.x, total_color.y, total_color.z]
 ]
 
-Image.merge(rgb).save('pleasework.png')
+
+Image.merge('RGB', screen).save('pleasework.png')
 

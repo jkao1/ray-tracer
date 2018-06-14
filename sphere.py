@@ -52,6 +52,18 @@ class Vector():
             cond_get(cond, self.z),
         )
 
+    def project(self, boolean):
+        projected = Vector(
+            np.zeros(boolean.shape),
+            np.zeros(boolean.shape),
+            np.zeros(boolean.shape),
+        )
+        
+        np.place( projected.x, boolean, self.x )
+        np.place( projected.y, boolean, self.y )
+        np.place( projected.z, boolean, self.z )
+        return projected
+
 eye = Vector(0, 0, -1)
 light = Vector(100, 100, -100)
 
@@ -84,11 +96,13 @@ class Sphere():
 
     def color(self, objects, origin, norm, distance, i, reflect_index):
         intersection = origin + norm * distance
-        translated = (intersection - self.c)
-        inverse = translated * (1.0 / self.r)
+        translated = (intersection - self.c) * (1.0 / self.r)
+        bump = Vector(translated.x * 0.001, translated.y * 0.001, translated.z * 0.001)
+        intersectionNot = intersection
+        intersectionNot += bump
 
-        reflected = (light - intersection).normal()
-        backwards_trace = (eye - intersection).normal()
+        reflected = (light - intersectionNot).normal()
+        backwards_trace = (eye - intersectionNot).normal()
 
         all_distances = [
             obj.touches(translated, reflected) for obj in objects
@@ -100,7 +114,6 @@ class Sphere():
         lambert = np.maximum( translated.dot(reflected), 0.0 )
         diffused = self.d * lambert * visible_ones
 
-        # phong reflection model
         # phong shading model
         shading = translated.dot( (reflected + backwards_trace).normal() )
         specular = Vector(1.0, 1.0, 1.0)
@@ -116,4 +129,5 @@ class Sphere():
             reflection = (norm - fi * norm.dot(translated)).normal()
             all_light += reflection
         return all_light
+
 
