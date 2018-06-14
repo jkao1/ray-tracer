@@ -1,9 +1,9 @@
-from vector import Vector
-from sphere import Sphere
+from sphere import Vector, Sphere
 import numpy as np
 
 WIDTH = 500
 HEIGHT = 500
+light = Vector(100, 100, -100)
 
 def cond_get(cond, x):
     if isinstance(x, int):
@@ -12,13 +12,12 @@ def cond_get(cond, x):
         return np.extract(cond, x)
 
 
-light = Vector(100, 100, -100)
 eye = Vector(0, 0, -1)
 
 def trace(objects, origin, normal):
     color = [ 0, 0, 0 ]
     object_distances = [ o.touches(origin, normal) for o in objects ]
-    closest_object = reduce( np.minimum, distances )
+    closest_object = reduce( np.minimum, object_distances )
 
     frumpy = []
     for i in range( len(objects) ):
@@ -28,12 +27,14 @@ def trace(objects, origin, normal):
     for (i, o, d) in frumpy:
         intersected = closest_object == d
         if np.any(intersected):
-            color += s.color(
+            color += o.color(
                 objects,
                 origin.cond_get(intersected),
                 normal.cond_get(intersected),
                 cond_get(intersected, d),
                 i,
+                light,
+                eye,
             )
     return color
 
@@ -54,7 +55,6 @@ all_y = np.repeat(
 
 tracer = Vector(all_x, all_y, 0.0)
 normalized = (tracer - eye).normal()
-print normalized, type(normalized)
 
 total_color = trace(
     all_objects,
