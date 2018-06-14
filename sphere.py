@@ -52,7 +52,7 @@ class Vector():
             cond_get(cond, self.z),
         )
 
-    
+
 class Sphere():
     def __init__(self, center, radius, diffuse_reflection):
         self.c = center
@@ -96,13 +96,16 @@ class Sphere():
 
         ambient = Vector(50.0 / 255, 50.0 / 255, 50.0 / 255)
         lambert = np.maximum( translated.dot(reflected), 0.0 )
+        diffused = self.d * lambert * visible_ones
 
         # phong reflection model
-        print translated, type(translated)
         fi = translated.double()
         reflection = (norm - fi * norm.dot(translated)).normal()
         # phong shading model
         shading = translated.dot( (reflected + backwards_trace).normal() )
+        specular = Vector(1.0, 1.0, 1.0)
+        specular *= np.power( np.clip(shading, 0.0, 1.0), 50.0)
+        specular *= visible_ones
 
-        return ambient + self.d*lambert*visible_ones + reflection + shading
+        return ambient + diffused + reflection + specular
 
